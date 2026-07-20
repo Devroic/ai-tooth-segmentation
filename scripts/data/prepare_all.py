@@ -1,6 +1,6 @@
 """Run every converter end-to-end: raw Datasets/ -> outputs/unified/*.json.
 Single entry point so the whole conversion step can be reproduced with one
-command: `python scripts/prepare_all.py`.
+command: `python scripts/data/prepare_all.py`.
 """
 from __future__ import annotations
 

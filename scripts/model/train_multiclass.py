@@ -14,7 +14,7 @@ from ultralytics import YOLO
 # has fewer images (2649 train) but a harder 32-way task and larger imgsz, so
 # epoch budget is kept modest to fit a CPU-only training run in a practical
 # amount of wall-clock time; raise --epochs if run on a GPU.
-PROJECT_DIR = str((Path(__file__).resolve().parent.parent / "outputs" / "runs"))
+PROJECT_DIR = str((Path(__file__).resolve().parents[2] / "outputs" / "runs"))
 
 
 def main() -> None:

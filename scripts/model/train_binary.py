@@ -15,7 +15,7 @@ from ultralytics import YOLO
 # ~34 minutes and already reached mask mAP50=0.71 thanks to COCO-pretrained
 # transfer learning on this comparatively easy "segment the blob" task, so
 # the default epoch budget here is deliberately small.
-PROJECT_DIR = str((Path(__file__).resolve().parent.parent / "outputs" / "runs"))
+PROJECT_DIR = str((Path(__file__).resolve().parents[2] / "outputs" / "runs"))
 
 
 def main() -> None:

@@ -13,7 +13,7 @@ from ultralytics import YOLO
 
 from tooth_seg.taxonomy import FDI_CODES
 
-PROJECT_DIR = str((Path(__file__).resolve().parent.parent / "outputs" / "runs"))
+PROJECT_DIR = str((Path(__file__).resolve().parents[2] / "outputs" / "runs"))
 
 
 def main() -> None:

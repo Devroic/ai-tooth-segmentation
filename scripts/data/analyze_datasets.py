@@ -90,7 +90,6 @@ def analyze() -> dict:
     with open(REPORT_DIR / "dataset_analysis.json", "w") as f:
         json.dump(report, f, indent=2)
 
-    # Plot: per-FDI class count (overall)
     fig, ax = plt.subplots(figsize=(14, 4))
     counts = [overall_fdi_counter.get(fdi, 0) for fdi in FDI_CODES]
     ax.bar(FDI_CODES, counts, color="#3b6fb0")
@@ -102,7 +101,6 @@ def analyze() -> dict:
     plt.savefig(REPORT_DIR / "fdi_class_distribution.png", dpi=120)
     plt.close(fig)
 
-    # Plot: images per source dataset
     fig, ax = plt.subplots(figsize=(8, 4))
     names = list(report["per_dataset"].keys())
     img_counts = [report["per_dataset"][n]["images"] for n in names]

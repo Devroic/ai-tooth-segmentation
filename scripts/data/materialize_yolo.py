@@ -113,7 +113,6 @@ def materialize(pool_name: str, images_by_id: dict, anns_by_image: dict, class_o
         (out_dir / split / "images").mkdir(parents=True, exist_ok=True)
         (out_dir / split / "labels").mkdir(parents=True, exist_ok=True)
 
-    # group by source dataset for capping
     by_source: dict[str, list[int]] = {}
     for img_id, img in images_by_id.items():
         by_source.setdefault(img["source_dataset"], []).append(img_id)
