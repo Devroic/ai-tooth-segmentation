@@ -1,0 +1,27 @@
+# Raw source datasets (11GB, provided locally - not project source)
+Datasets/
+
+# Generated data/models/reports - all reproducible via scripts/ (see README)
+outputs/
+
+# Python virtual environment
+.venv/
+venv/
+
+# Python build/cache artifacts
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+
+# Pretrained weights auto-downloaded by ultralytics (re-fetched on demand)
+*.pt
+*.onnx
+
+# Stray Ultralytics run dir created if project/name resolution misbehaves
+/runs/
+
+# OS cruft
+.DS_Store
+Thumbs.db
