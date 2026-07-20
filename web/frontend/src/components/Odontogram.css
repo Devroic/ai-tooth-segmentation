@@ -39,6 +39,10 @@
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
 }
 
+.tooth-cell.low-confidence {
+  border: 2px dashed #b45309;
+}
+
 .tooth-flag {
   position: absolute;
   top: -6px;
@@ -81,4 +85,18 @@
 .legend-swatch-empty {
   background: #f1f5f9;
   border: 1px dashed #cbd5e1;
+}
+
+.legend-swatch-low-confidence {
+  background: #fff;
+  border: 2px dashed #b45309;
+}
+
+.legend-swatch-duplicate {
+  background: #dc2626;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 9px;
+  line-height: 12px;
+  text-align: center;
 }

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import './UploadPanel.css'
 
-export default function UploadPanel({ onFileSelected, previewUrl, conf, onConfChange, onAnalyze, loading, disabled }) {
+export default function UploadPanel({ onFileSelected, previewUrl, onAnalyze, loading, disabled }) {
   const inputRef = useRef(null)
   const [dragOver, setDragOver] = useState(false)
 
@@ -30,7 +30,7 @@ export default function UploadPanel({ onFileSelected, previewUrl, conf, onConfCh
         ) : (
           <div className="drop-zone-prompt">
             <span className="drop-zone-icon">+</span>
-            <p>Click or drag a panoramic radiograph here</p>
+            <p>Click or drag a panoramic X-ray here</p>
             <p className="drop-zone-hint">JPG or PNG</p>
           </div>
         )}
@@ -43,20 +43,8 @@ export default function UploadPanel({ onFileSelected, previewUrl, conf, onConfCh
         />
       </div>
 
-      <label className="conf-label">
-        Confidence threshold: <strong>{conf.toFixed(2)}</strong>
-        <input
-          type="range"
-          min="0.05"
-          max="0.9"
-          step="0.05"
-          value={conf}
-          onChange={(e) => onConfChange(Number(e.target.value))}
-        />
-      </label>
-
       <button className="analyze-button" onClick={onAnalyze} disabled={disabled || loading}>
-        {loading ? 'Analyzing…' : 'Analyze radiograph'}
+        {loading ? 'Analyzing…' : 'Analyze X-ray'}
       </button>
     </div>
   )

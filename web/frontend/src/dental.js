@@ -9,6 +9,13 @@ export const GROUP_COLORS = {
   molar: '#0F9D58',
 }
 
+// Below this, a detection is visually flagged for manual review rather than
+// hidden - the model still found something, it's just less sure. No
+// user-facing "confidence threshold" filter exists in this app on purpose:
+// that's an ML tuning concept, not a clinical one, so results are always
+// shown in full and confidence is communicated visually instead.
+export const LOW_CONFIDENCE_THRESHOLD = 0.5
+
 const ORDINAL_NAME = {
   1: 'Central Incisor',
   2: 'Lateral Incisor',

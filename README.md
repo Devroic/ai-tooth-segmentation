@@ -184,14 +184,22 @@ There are two separate front ends, both calling the exact same
 model or post-processing logic, so they always agree:
 
 - **`app/app.py`** - a single-file Gradio tool for developers: fastest way
-  to sanity-check a newly trained checkpoint. Unchanged by the web app below.
-  Run: `.venv\Scripts\python.exe app/app.py`
+  to sanity-check a newly trained checkpoint. Exposes the raw ML controls
+  (confidence-threshold slider, binary tooth-mask view, editable weight
+  paths) that make sense for a technical user comparing checkpoints.
+  Unchanged by the web app below. Run: `.venv\Scripts\python.exe app/app.py`
 - **`web/`** - a React frontend + thin FastAPI backend, built for a
-  non-technical clinical user. Shows the annotated radiograph alongside an
+  non-technical clinical user. Deliberately shows less than Gradio: no
+  confidence-threshold control (that's an ML tuning concept, not a
+  clinical one - detections are always shown in full, with confidence
+  communicated visually instead) and no binary-mask view (not clinically
+  meaningful on its own). Shows the annotated radiograph alongside an
   **odontogram** (the standard tooth-chart layout dentists already read),
-  and flags teeth with duplicate/ambiguous FDI predictions for manual
-  review. The backend serves the prebuilt frontend directly, so everyday
-  use is also a single command, no Node/npm required at runtime:
+  color-codes confidence per tooth (green/amber/red, both in the table and
+  as a dashed low-confidence outline on the odontogram), and flags teeth
+  with duplicate/ambiguous FDI predictions for manual review. The backend
+  serves the prebuilt frontend directly, so everyday use is also a single
+  command, no Node/npm required at runtime:
   `.venv\Scripts\python.exe -m uvicorn web.backend.main:app --port 8000`,
   then open `http://127.0.0.1:8000`. See `web/frontend/README.md` for the
   frontend-development (hot-reload) workflow.

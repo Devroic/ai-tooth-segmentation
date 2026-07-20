@@ -48,14 +48,36 @@
 
 .confidence-bar-fill {
   height: 100%;
-  background: #2563eb;
   border-radius: 999px;
+}
+
+.confidence-bar-fill.tier-high {
+  background: #16a34a;
+}
+
+.confidence-bar-fill.tier-medium {
+  background: #d97706;
+}
+
+.confidence-bar-fill.tier-low {
+  background: #dc2626;
 }
 
 .confidence-value {
   font-variant-numeric: tabular-nums;
   color: #475569;
   font-size: 13px;
+}
+
+.review-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .empty-state {

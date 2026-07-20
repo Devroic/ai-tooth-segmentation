@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import './ImageViewer.css'
 
-export default function ImageViewer({ originalUrl, binaryOverlay, multiclassOverlay }) {
+export default function ImageViewer({ originalUrl, multiclassOverlay }) {
   const tabs = [
-    { key: 'multiclass', label: 'Per-tooth segmentation', src: multiclassOverlay },
-    { key: 'binary', label: 'Tooth mask', src: binaryOverlay },
-    { key: 'original', label: 'Original', src: originalUrl },
+    { key: 'multiclass', label: 'Annotated X-ray', src: multiclassOverlay },
+    { key: 'original', label: 'Original X-ray', src: originalUrl },
   ].filter((t) => t.src)
 
   const [active, setActive] = useState(tabs[0]?.key)

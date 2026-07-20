@@ -6,10 +6,14 @@ import Odontogram from './components/Odontogram'
 import DetectionsTable from './components/DetectionsTable'
 import './App.css'
 
+// Fixed server-side detection floor - not exposed as a user control (see
+// dental.js). Low relative to a typical ML default so borderline teeth are
+// still surfaced for review rather than silently dropped.
+const ANALYZE_CONF = 0.15
+
 export default function App() {
   const [file, setFile] = useState(null)
   const [previewUrl, setPreviewUrl] = useState(null)
-  const [conf, setConf] = useState(0.25)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [result, setResult] = useState(null)
@@ -31,7 +35,7 @@ export default function App() {
     setLoading(true)
     setError(null)
     try {
-      const data = await analyzeImage(file, conf)
+      const data = await analyzeImage(file, ANALYZE_CONF)
       setResult(data)
     } catch (e) {
       setError(e.message)
@@ -40,18 +44,18 @@ export default function App() {
     }
   }
 
-  const modelsMissing = health && !health.binary_model_loaded && !health.multiclass_model_loaded
+  const modelUnavailable = health && !health.multiclass_model_loaded
 
   return (
     <div className="app">
       <header className="app-header">
         <h1>Tooth Segmentation</h1>
-        <p>Upload a panoramic radiograph to segment and number each tooth.</p>
+        <p>Upload a panoramic X-ray to identify and number each tooth.</p>
       </header>
 
-      {modelsMissing && (
+      {modelUnavailable && (
         <div className="banner banner-warning">
-          No trained model weights found on the server. Train the models first (see README).
+          The tooth-identification model isn't available on the server right now. Train it first (see README).
         </div>
       )}
       {error && <div className="banner banner-error">{error}</div>}
@@ -61,22 +65,16 @@ export default function App() {
           <UploadPanel
             onFileSelected={handleFileSelected}
             previewUrl={previewUrl}
-            conf={conf}
-            onConfChange={setConf}
             onAnalyze={handleAnalyze}
             loading={loading}
-            disabled={!file || modelsMissing}
+            disabled={!file || modelUnavailable}
           />
         </aside>
 
         <main className="app-main">
           {result ? (
             <>
-              <ImageViewer
-                originalUrl={previewUrl}
-                binaryOverlay={result.binary_overlay}
-                multiclassOverlay={result.multiclass_overlay}
-              />
+              <ImageViewer originalUrl={previewUrl} multiclassOverlay={result.multiclass_overlay} />
               <section className="panel">
                 <h2>Odontogram</h2>
                 <Odontogram detections={result.detections} />
@@ -88,7 +86,7 @@ export default function App() {
             </>
           ) : (
             <div className="empty-main">
-              <p>Upload a radiograph and click "Analyze radiograph" to see results.</p>
+              <p>Upload an X-ray and click "Analyze X-ray" to see results.</p>
             </div>
           )}
         </main>
