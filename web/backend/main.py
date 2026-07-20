@@ -4,17 +4,32 @@ No inference logic lives here - this only handles HTTP/image encoding and
 delegates to the same ToothSegPipeline used by app/app.py (the Gradio dev
 tool), so both UIs are guaranteed to produce identical results.
 
-Run with: .venv/Scripts/python.exe -m uvicorn web.backend.main:app --reload --port 8000
+Everyday use (single command, no Node/npm needed - serves the prebuilt
+frontend from web/frontend/dist/, produced by `npm run build`):
+    .venv/Scripts/python.exe -m uvicorn web.backend.main:app --port 8000
+    -> open http://127.0.0.1:8000
+
+Frontend development (hot-reload via Vite's dev server on :5173, which
+proxies /api/* to this backend - see web/frontend/vite.config.js):
+    .venv/Scripts/python.exe -m uvicorn web.backend.main:app --reload --reload-dir web/backend --reload-dir src --port 8000
+    cd web/frontend && npm run dev
+
+--reload-dir scopes the auto-reload file watcher to just this backend and
+the shared tooth_seg package - without it, uvicorn watches the entire
+project root by default, including Datasets/ (11GB) and .venv/ (1.6GB),
+which is needlessly heavy and can make the server unstable.
 """
 from __future__ import annotations
 
 import base64
 import io
 import os
+from pathlib import Path
 
 import numpy as np
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from PIL import Image
 from pydantic import BaseModel
 
@@ -22,6 +37,7 @@ from tooth_seg.inference.pipeline import ToothSegPipeline, detections_to_table
 
 BINARY_WEIGHTS = os.environ.get("TOOTH_SEG_BINARY_WEIGHTS", "outputs/runs/binary_seg/weights/best.pt")
 MULTICLASS_WEIGHTS = os.environ.get("TOOTH_SEG_MULTICLASS_WEIGHTS", "outputs/runs/multiclass_seg/weights/best.pt")
+FRONTEND_DIST = Path(__file__).resolve().parent.parent / "frontend" / "dist"
 
 app = FastAPI(title="Tooth Segmentation API")
 app.add_middleware(
@@ -100,3 +116,11 @@ async def analyze(file: UploadFile = File(...), conf: float = 0.25) -> AnalyzeRe
         detections=detections_to_table(result.detections),
         binary_tooth_pixels=int(result.binary_mask.sum()) if result.binary_mask is not None else None,
     )
+
+
+# Serves the prebuilt React app (npm run build -> web/frontend/dist) at "/".
+# Mounted last so the /api/* routes above always take precedence. In dev
+# mode (npm run dev), dist/ won't exist yet - that's fine, the frontend
+# dev server handles the UI instead and just proxies /api/* here.
+if FRONTEND_DIST.exists():
+    app.mount("/", StaticFiles(directory=str(FRONTEND_DIST), html=True), name="frontend")

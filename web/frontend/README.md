@@ -3,23 +3,43 @@
 React (Vite) frontend for the clinical-facing tooth segmentation app. Talks
 to the FastAPI backend in `../backend`, which wraps the same
 `tooth_seg.inference.pipeline` used by the developer-facing Gradio app
-(`app/app.py`) - both UIs call identical inference code, so results always
+(`app/app.py`) - all three call identical inference code, so results always
 match.
 
-## Run locally
+## Everyday use (one command, no Node/npm needed)
+
+The backend serves the already-built frontend directly:
 
 ```
-# 1. Backend (from the project root, same .venv as everything else)
-.venv\Scripts\python.exe -m uvicorn web.backend.main:app --reload --port 8000
+# from the project root, same .venv as everything else
+.venv\Scripts\python.exe -m uvicorn web.backend.main:app --port 8000
+```
 
-# 2. Frontend (from this directory)
+Open **http://127.0.0.1:8000**. That's it - one terminal, one URL, exactly
+like the Gradio app.
+
+(This works because `dist/` - the prebuilt frontend - is already generated
+via `npm run build` whenever the frontend changes; see below. You don't
+need to rebuild it just to use the app.)
+
+## Frontend development (editing the UI)
+
+If you're changing frontend code, you want hot-reload instead of rebuilding
+by hand each time - that needs two terminals:
+
+```
+# 1. Backend (project root)
+.venv\Scripts\python.exe -m uvicorn web.backend.main:app --reload --reload-dir web/backend --reload-dir src --port 8000
+
+# 2. Frontend (this directory)
 npm install
 npm run dev
 ```
 
-Then open the URL Vite prints (default `http://localhost:5173`). The dev
-server proxies `/api/*` to the backend on port 8000 (see `vite.config.js`),
-so no CORS setup is needed locally.
+Open the URL Vite prints (`http://localhost:5173`). Its dev server proxies
+`/api/*` to the backend on port 8000 (see `vite.config.js`), so no CORS
+setup is needed. Once you're done editing, run `npm run build` so the
+one-command production path above picks up your changes.
 
 ## Build for production
 
@@ -27,5 +47,6 @@ so no CORS setup is needed locally.
 npm run build
 ```
 
-Outputs static files to `dist/`. Serve them with any static file server, or
-have the FastAPI backend serve them directly (not wired up yet).
+Outputs static files to `dist/` (gitignored - rebuild after pulling
+frontend changes), which `web/backend/main.py` serves automatically if
+present.

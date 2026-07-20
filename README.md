@@ -185,10 +185,13 @@ model or post-processing logic, so they always agree:
 
 - **`app/app.py`** - a single-file Gradio tool for developers: fastest way
   to sanity-check a newly trained checkpoint. Unchanged by the web app below.
+  Run: `.venv\Scripts\python.exe app/app.py`
 - **`web/`** - a React frontend + thin FastAPI backend, built for a
   non-technical clinical user. Shows the annotated radiograph alongside an
   **odontogram** (the standard tooth-chart layout dentists already read),
-  flags teeth with duplicate/ambiguous FDI predictions for manual review,
-  and is meant to eventually be packaged as a proper desktop/local
-  application rather than a bare dev tool. See `web/frontend/README.md` for
-  how to run it.
+  and flags teeth with duplicate/ambiguous FDI predictions for manual
+  review. The backend serves the prebuilt frontend directly, so everyday
+  use is also a single command, no Node/npm required at runtime:
+  `.venv\Scripts\python.exe -m uvicorn web.backend.main:app --port 8000`,
+  then open `http://127.0.0.1:8000`. See `web/frontend/README.md` for the
+  frontend-development (hot-reload) workflow.
