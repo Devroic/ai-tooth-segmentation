@@ -21,14 +21,20 @@ DEFAULT_BINARY_WEIGHTS = "outputs/runs/binary_seg/weights/best.pt"
 DEFAULT_MULTICLASS_WEIGHTS = "outputs/runs/multiclass_seg/weights/best.pt"
 
 _pipeline: ToothSegPipeline | None = None
+_pipeline_key: tuple[str, str] | None = None
 
 
 def get_pipeline(binary_weights: str, multiclass_weights: str) -> ToothSegPipeline:
-    global _pipeline
-    if _pipeline is None:
+    """Rebuilds the pipeline whenever the requested weight paths change, so
+    editing the "Model weights (advanced)" textboxes and re-running actually
+    takes effect instead of silently reusing whatever loaded first."""
+    global _pipeline, _pipeline_key
+    key = (binary_weights, multiclass_weights)
+    if _pipeline is None or _pipeline_key != key:
         bw = binary_weights if Path(binary_weights).exists() else None
         mw = multiclass_weights if Path(multiclass_weights).exists() else None
         _pipeline = ToothSegPipeline(binary_weights=bw, multiclass_weights=mw)
+        _pipeline_key = key
     return _pipeline
 
 
