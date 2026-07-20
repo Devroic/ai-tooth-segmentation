@@ -31,7 +31,10 @@ scripts/
     train_multiclass.py      train the multi-class (32-FDI) segmentation model
     evaluate.py               evaluate a trained model on its test split
     predict_samples.py        run both models on sample images, save visualizations
-app/app.py                    Gradio web app: upload a radiograph, see results
+app/app.py                    Gradio dev tool: upload a radiograph, see results (objective 4)
+web/
+  backend/main.py             FastAPI wrapper around the same inference pipeline
+  frontend/                   React UI for clinical use (odontogram, reports, etc.)
 outputs/                      generated data/reports/models (gitignored, not source)
 ```
 
@@ -173,3 +176,19 @@ constraint. This shows up in the per-class recall being consistently a bit
 higher than would be implied by strict "no duplicate class per arch"
 post-processing; a rule-based left-right/quadrant consistency pass over raw
 detections would be a natural follow-up.
+
+## Two UIs, one inference pipeline
+
+There are two separate front ends, both calling the exact same
+`tooth_seg.inference.pipeline.ToothSegPipeline` - neither reimplements any
+model or post-processing logic, so they always agree:
+
+- **`app/app.py`** - a single-file Gradio tool for developers: fastest way
+  to sanity-check a newly trained checkpoint. Unchanged by the web app below.
+- **`web/`** - a React frontend + thin FastAPI backend, built for a
+  non-technical clinical user. Shows the annotated radiograph alongside an
+  **odontogram** (the standard tooth-chart layout dentists already read),
+  flags teeth with duplicate/ambiguous FDI predictions for manual review,
+  and is meant to eventually be packaged as a proper desktop/local
+  application rather than a bare dev tool. See `web/frontend/README.md` for
+  how to run it.

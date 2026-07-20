@@ -22,6 +22,11 @@ dist/
 # Stray Ultralytics run dir created if project/name resolution misbehaves
 /runs/
 
+# Frontend (web/frontend)
+node_modules/
+web/frontend/dist/
+*.local
+
 # OS cruft
 .DS_Store
 Thumbs.db

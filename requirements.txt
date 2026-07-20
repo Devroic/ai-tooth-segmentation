@@ -15,3 +15,7 @@ tqdm
 pyyaml
 gradio
 shapely
+
+fastapi
+uvicorn[standard]
+python-multipart
