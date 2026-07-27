@@ -35,8 +35,8 @@ from pydantic import BaseModel
 
 from tooth_seg.inference.pipeline import ToothSegPipeline, detections_to_table
 
-BINARY_WEIGHTS = os.environ.get("TOOTH_SEG_BINARY_WEIGHTS", "outputs/runs/binary_seg/weights/best.pt")
-MULTICLASS_WEIGHTS = os.environ.get("TOOTH_SEG_MULTICLASS_WEIGHTS", "outputs/runs/multiclass_seg/weights/best.pt")
+BINARY_WEIGHTS = os.environ.get("TOOTH_SEG_BINARY_WEIGHTS", "models/binary_seg/best.pt")
+MULTICLASS_WEIGHTS = os.environ.get("TOOTH_SEG_MULTICLASS_WEIGHTS", "models/multiclass_seg/best.pt")
 FRONTEND_DIST = Path(__file__).resolve().parent.parent / "frontend" / "dist"
 
 app = FastAPI(title="Tooth Segmentation API")

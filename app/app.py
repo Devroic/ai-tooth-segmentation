@@ -17,8 +17,8 @@ from PIL import Image
 
 from tooth_seg.inference.pipeline import ToothSegPipeline, detections_to_table
 
-DEFAULT_BINARY_WEIGHTS = "outputs/runs/binary_seg/weights/best.pt"
-DEFAULT_MULTICLASS_WEIGHTS = "outputs/runs/multiclass_seg/weights/best.pt"
+DEFAULT_BINARY_WEIGHTS = "models/binary_seg/best.pt"
+DEFAULT_MULTICLASS_WEIGHTS = "models/multiclass_seg/best.pt"
 
 _pipeline: ToothSegPipeline | None = None
 _pipeline_key: tuple[str, str] | None = None

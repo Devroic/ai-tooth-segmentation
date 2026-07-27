@@ -18,9 +18,10 @@ The backend serves the already-built frontend directly:
 Open **http://127.0.0.1:8000**. That's it - one terminal, one URL, exactly
 like the Gradio app.
 
-(This works because `dist/` - the prebuilt frontend - is already generated
-via `npm run build` whenever the frontend changes; see below. You don't
-need to rebuild it just to use the app.)
+(This works because `dist/` - the prebuilt frontend - is committed to the
+repo and rebuilt via `npm run build` whenever the frontend changes; see
+below. After a fresh `git pull` you don't need Node/npm at all just to use
+the app.)
 
 ## Frontend development (editing the UI)
 
@@ -47,6 +48,6 @@ one-command production path above picks up your changes.
 npm run build
 ```
 
-Outputs static files to `dist/` (gitignored - rebuild after pulling
-frontend changes), which `web/backend/main.py` serves automatically if
-present.
+Outputs static files to `dist/` (tracked in git - commit the rebuilt
+`dist/` alongside any frontend source change), which `web/backend/main.py`
+serves automatically if present.

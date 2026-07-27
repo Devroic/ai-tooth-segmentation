@@ -15,6 +15,10 @@ Given a panoramic X-ray, the system:
 
 ```
 Datasets/                    11 raw source datasets (not modified, gitignored)
+docs/                         thesis contract PDF and other reference material
+models/                        shipped inference weights (tracked in git, see below)
+  binary_seg/best.pt
+  multiclass_seg/best.pt
 src/tooth_seg/
   taxonomy.py                FDI <-> Universal numbering, tooth-group mapping
   data/converters/           one converter per source dataset -> unified schema
@@ -34,8 +38,31 @@ app/app.py                    Gradio dev tool: upload a radiograph, see results
 web/
   backend/main.py             FastAPI wrapper around the same inference pipeline
   frontend/                   React UI for clinical use (odontogram, reports, etc.)
-outputs/                      generated data/reports/models (gitignored, not source)
+  frontend/dist/               prebuilt frontend bundle (tracked in git, see below)
+outputs/                      generated data/reports/retraining runs (gitignored, not source)
 ```
+
+## Quick start (no training required)
+
+The two trained checkpoints (`models/binary_seg/best.pt`,
+`models/multiclass_seg/best.pt`, ~6.5MB each) and the prebuilt frontend
+(`web/frontend/dist/`) are committed to the repo, so both apps work
+immediately after cloning - no dataset, no training run, no `npm install`:
+
+```
+py -3.12 -m venv .venv
+.venv\Scripts\python.exe -m pip install -r requirements.txt
+.venv\Scripts\python.exe -m pip install -e .
+
+# Gradio dev tool
+.venv\Scripts\python.exe app/app.py
+
+# or the clinical web app
+.venv\Scripts\python.exe -m uvicorn web.backend.main:app --port 8000
+```
+
+`Datasets/` and `outputs/` remain gitignored - they're only needed if you
+want to retrain from scratch (see "Reproducing the pipeline" below).
 
 ## Data
 
@@ -84,16 +111,10 @@ ensures duplicate images always land in the same split, so no test data
 leaks into training via a differently-annotated copy. See
 `outputs/reports/dedup_report.json` for what was found.
 
-## Setup
+## Training environment
 
-```
-# Python 3.12 (3.14 is too new for the current PyTorch/Ultralytics wheels)
-py -3.12 -m venv .venv
-.venv\Scripts\python.exe -m pip install -r requirements.txt
-.venv\Scripts\python.exe -m pip install -e .
-```
-
-No dedicated GPU was available on the development machine (Intel Iris Xe
+Python 3.12 was used (3.14 is too new for the current PyTorch/Ultralytics
+wheels). No dedicated GPU was available on the development machine (Intel Iris Xe
 integrated graphics only) — everything here is configured to train on CPU
 with small models (YOLOv8n-seg) and modest image sizes. A 1-epoch timing
 test (4373 images, imgsz=512, batch=8) took ~34 minutes and already reached
@@ -109,7 +130,11 @@ change `device="cpu"` to `device=0` in `scripts/model/train_binary.py` /
 `train_multiclass.py`, and you can raise `--imgsz`/`--epochs`/`--batch`
 substantially for better accuracy.
 
-## Reproducing the pipeline
+## Reproducing the pipeline (optional - retraining from scratch)
+
+Not required for everyday use (see "Quick start" above) - only needed if you
+want to retrain on the raw datasets yourself. Requires `Datasets/` locally
+(not included in the repo, 11GB).
 
 ```
 # 1. Convert all raw datasets to the unified schema
@@ -135,8 +160,9 @@ substantially for better accuracy.
 # 7. Sample prediction visualizations
 .venv\Scripts\python.exe scripts/model/predict_samples.py
 
-# 8. Launch the demo app
-.venv\Scripts\python.exe app/app.py
+# 8. Copy the new checkpoints over the shipped ones used by the apps
+cp outputs/runs/binary_seg/weights/best.pt models/binary_seg/best.pt
+cp outputs/runs/multiclass_seg/weights/best.pt models/multiclass_seg/best.pt
 ```
 
 ## Results

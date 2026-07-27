@@ -12,19 +12,23 @@ venv/
 __pycache__/
 *.pyc
 *.egg-info/
-build/
-dist/
+/build/
+/dist/
 
-# Pretrained weights auto-downloaded by ultralytics (re-fetched on demand)
+# Pretrained weights auto-downloaded by ultralytics (re-fetched on demand),
+# and any stray checkpoints elsewhere - but the shipped inference weights in
+# models/ are tracked so the apps work right after a git pull, no training
+# required.
 *.pt
 *.onnx
+!models/**/*.pt
 
 # Stray Ultralytics run dir created if project/name resolution misbehaves
 /runs/
 
-# Frontend (web/frontend)
+# Frontend (web/frontend) - dist/ is tracked (see below) so the FastAPI
+# backend can serve the app right after a git pull, no npm/node needed
 node_modules/
-web/frontend/dist/
 *.local
 
 # OS cruft
