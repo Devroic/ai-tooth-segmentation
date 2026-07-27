@@ -1,10 +1,8 @@
 import { GROUP_COLORS, LOW_CONFIDENCE_THRESHOLD, ODONTOGRAM_ROWS, toothDisplayName } from '../dental'
 import './Odontogram.css'
 
-// Detections for the same FDI code (a known model limitation - see README)
-// are grouped so the chart surfaces the ambiguity instead of hiding it. Each
-// group is sorted by confidence descending so "the primary one" always
-// means "the model's best guess", not just whichever came first.
+// Groups duplicate FDI predictions (see README) so the chart flags the
+// ambiguity; each group sorted by confidence descending.
 function groupByFdi(detections) {
   const byFdi = {}
   for (const d of detections) {

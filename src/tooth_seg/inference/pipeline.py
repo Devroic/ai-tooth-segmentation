@@ -1,8 +1,4 @@
-"""Combined inference pipeline: given a panoramic radiograph, produce
-(1) a binary tooth/non-tooth mask overlay (objective 2 model) and
-(2) a per-tooth instance segmentation with FDI + tooth-group labels
-    (objective 3 model).
-"""
+"""Binary tooth/non-tooth mask + per-tooth FDI segmentation from one radiograph."""
 from __future__ import annotations
 
 from dataclasses import dataclass, field

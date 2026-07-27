@@ -1,6 +1,5 @@
-"""Run the trained binary + multiclass models over a handful of test-split
-images and save side-by-side visualizations, for spot-checking / the thesis
-report figures.
+"""Runs both trained models over a handful of test-split images and saves
+side-by-side visualizations for spot-checking.
 """
 from __future__ import annotations
 

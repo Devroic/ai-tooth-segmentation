@@ -1,23 +1,8 @@
 """FastAPI wrapper around tooth_seg.inference.pipeline for the React frontend.
 
-No inference logic lives here - this only handles HTTP/image encoding and
-delegates to the same ToothSegPipeline used by app/app.py (the Gradio dev
-tool), so both UIs are guaranteed to produce identical results.
-
-Everyday use (single command, no Node/npm needed - serves the prebuilt
-frontend from web/frontend/dist/, produced by `npm run build`):
-    .venv/Scripts/python.exe -m uvicorn web.backend.main:app --port 8000
-    -> open http://127.0.0.1:8000
-
-Frontend development (hot-reload via Vite's dev server on :5173, which
-proxies /api/* to this backend - see web/frontend/vite.config.js):
-    .venv/Scripts/python.exe -m uvicorn web.backend.main:app --reload --reload-dir web/backend --reload-dir src --port 8000
-    cd web/frontend && npm run dev
-
---reload-dir scopes the auto-reload file watcher to just this backend and
-the shared tooth_seg package - without it, uvicorn watches the entire
-project root by default, including Datasets/ (11GB) and .venv/ (1.6GB),
-which is needlessly heavy and can make the server unstable.
+Run: uvicorn web.backend.main:app --port 8000, then open :8000.
+Frontend dev (hot-reload): add --reload-dir web/backend --reload-dir src,
+then `npm run dev` in web/frontend (see its README).
 """
 from __future__ import annotations
 
@@ -118,9 +103,6 @@ async def analyze(file: UploadFile = File(...), conf: float = 0.25) -> AnalyzeRe
     )
 
 
-# Serves the prebuilt React app (npm run build -> web/frontend/dist) at "/".
-# Mounted last so the /api/* routes above always take precedence. In dev
-# mode (npm run dev), dist/ won't exist yet - that's fine, the frontend
-# dev server handles the UI instead and just proxies /api/* here.
+# Mounted last so /api/* above takes precedence.
 if FRONTEND_DIST.exists():
     app.mount("/", StaticFiles(directory=str(FRONTEND_DIST), html=True), name="frontend")

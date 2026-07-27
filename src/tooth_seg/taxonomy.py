@@ -10,8 +10,6 @@ FDI code.
 """
 from __future__ import annotations
 
-# --- Universal Numbering System (1-32) <-> FDI ------------------------------
-# Standard adult permanent-dentition conversion table.
 UNIVERSAL_TO_FDI: dict[int, str] = {
     1: "18", 2: "17", 3: "16", 4: "15", 5: "14", 6: "13", 7: "12", 8: "11",
     9: "21", 10: "22", 11: "23", 12: "24", 13: "25", 14: "26", 15: "27", 16: "28",
@@ -23,7 +21,6 @@ FDI_TO_UNIVERSAL: dict[str, int] = {v: k for k, v in UNIVERSAL_TO_FDI.items()}
 # All 32 permanent-tooth FDI codes, in canonical (Universal 1-32) order.
 FDI_CODES: list[str] = [UNIVERSAL_TO_FDI[i] for i in range(1, 33)]
 
-# --- FDI -> tooth-group ------------------------------------------------------
 # Second digit of FDI code = position from the midline within its quadrant.
 _POSITION_TO_GROUP = {
     "1": "incisor", "2": "incisor",

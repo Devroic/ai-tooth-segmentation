@@ -1,6 +1,4 @@
-// Mirrors src/tooth_seg/taxonomy.py so the odontogram uses the exact same
-// FDI layout, tooth-group derivation, and colors as the Python overlay
-// images - the two views should always agree.
+// Mirrors src/tooth_seg/taxonomy.py - keep in sync.
 
 export const GROUP_COLORS = {
   incisor: '#4285F4',
@@ -9,11 +7,7 @@ export const GROUP_COLORS = {
   molar: '#0F9D58',
 }
 
-// Below this, a detection is visually flagged for manual review rather than
-// hidden - the model still found something, it's just less sure. No
-// user-facing "confidence threshold" filter exists in this app on purpose:
-// that's an ML tuning concept, not a clinical one, so results are always
-// shown in full and confidence is communicated visually instead.
+// Below this, flag for review instead of filtering out.
 export const LOW_CONFIDENCE_THRESHOLD = 0.5
 
 const ORDINAL_NAME = {
@@ -43,9 +37,7 @@ export function toothDisplayName(fdi) {
   return `${arch} ${side} ${ORDINAL_NAME[position]} (${fdi})`
 }
 
-// Two rows, radiograph convention (patient's right shown on the left),
-// each a quadrant pair ordered from the outer wisdom tooth to the midline
-// and back out, matching how a panoramic X-ray physically reads.
+// Radiograph convention: patient's right on the left.
 export const ODONTOGRAM_ROWS = [
   ['18', '17', '16', '15', '14', '13', '12', '11', '21', '22', '23', '24', '25', '26', '27', '28'],
   ['48', '47', '46', '45', '44', '43', '42', '41', '31', '32', '33', '34', '35', '36', '37', '38'],

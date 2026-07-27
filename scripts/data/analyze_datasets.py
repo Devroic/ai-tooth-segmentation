@@ -1,9 +1,5 @@
-"""Objective 1: Analysis of the (unified) dataset collection.
-
-Reads every outputs/unified/<id>.json produced by the converters and reports,
-per source dataset and overall: image counts, annotation counts, per-FDI and
-per-group class distribution, image resolution stats, and box-only vs true-mask
-annotation counts. Writes a JSON report plus a couple of summary plots.
+"""Analyzes outputs/unified/*.json: class distribution, resolutions, box vs
+mask counts, per dataset and overall. Writes a JSON report and plots.
 """
 from __future__ import annotations
 

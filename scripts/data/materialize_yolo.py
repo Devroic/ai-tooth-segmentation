@@ -1,16 +1,8 @@
-"""Build final YOLOv8-seg-ready dataset directories from the unified
-per-dataset JSONs + the dedup-consistent split assignment.
-
-Produces two datasets:
-  outputs/data/binary/{train,val,test}/{images,labels} + data.yaml   (1 class: tooth)
-  outputs/data/multiclass/{train,val,test}/{images,labels} + data.yaml (32 classes: FDI codes)
-
-Images are re-encoded to JPEG and downscaled (longest side capped) to keep
-CPU training tractable; polygon coordinates are rescaled to match and
-simplified (cv2.approxPolyDP) to keep label files small. box_only
-annotations (Dataset 30, bounding boxes only) are included in the
-multiclass pool but excluded from the binary pool, since a box is not an
-accurate pixel mask and would corrupt binary segmentation supervision.
+"""Builds YOLOv8-seg dataset dirs (binary + multiclass) from the unified
+JSONs and the dedup-consistent split. Images are downscaled/re-encoded and
+polygons simplified to keep CPU training tractable. box_only annotations
+(Dataset 30) go into multiclass only - a box isn't an accurate mask and
+would corrupt binary segmentation supervision.
 """
 from __future__ import annotations
 

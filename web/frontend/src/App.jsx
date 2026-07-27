@@ -6,9 +6,7 @@ import Odontogram from './components/Odontogram'
 import DetectionsTable from './components/DetectionsTable'
 import './App.css'
 
-// Fixed server-side detection floor - not exposed as a user control (see
-// dental.js). Low relative to a typical ML default so borderline teeth are
-// still surfaced for review rather than silently dropped.
+// Not user-configurable - low so borderline teeth surface for review, see dental.js.
 const ANALYZE_CONF = 0.15
 
 export default function App() {

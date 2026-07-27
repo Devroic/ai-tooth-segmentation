@@ -1,10 +1,4 @@
-"""Objective 4 deliverable: a small web app to try the trained models.
-Upload a panoramic radiograph -> get back a binary tooth/non-tooth mask and
-a per-tooth FDI-numbered, group-colored instance segmentation, plus a table
-of detected teeth.
-
-Run with:  .venv/Scripts/python.exe app/app.py
-"""
+"""Gradio dev tool for the trained models. Run: app/app.py"""
 from __future__ import annotations
 
 import argparse
@@ -25,9 +19,7 @@ _pipeline_key: tuple[str, str] | None = None
 
 
 def get_pipeline(binary_weights: str, multiclass_weights: str) -> ToothSegPipeline:
-    """Rebuilds the pipeline whenever the requested weight paths change, so
-    editing the "Model weights (advanced)" textboxes and re-running actually
-    takes effect instead of silently reusing whatever loaded first."""
+    """Rebuilds only when the weight paths actually change."""
     global _pipeline, _pipeline_key
     key = (binary_weights, multiclass_weights)
     if _pipeline is None or _pipeline_key != key:

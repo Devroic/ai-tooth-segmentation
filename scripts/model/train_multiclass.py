@@ -1,7 +1,7 @@
-"""Objective 3: train the multi-class per-tooth (32 FDI classes) instance
-segmentation model. Tooth-group labels (incisor/canine/premolar/molar) are
-derived from the predicted FDI code at inference time (tooth_seg.taxonomy),
-not trained as a separate head.
+"""Train the multi-class per-tooth (32 FDI classes) segmentation model.
+
+Tooth-group labels are derived from the predicted FDI code at inference time
+(tooth_seg.taxonomy), not trained as a separate head.
 """
 from __future__ import annotations
 
@@ -10,16 +10,13 @@ from pathlib import Path
 
 from ultralytics import YOLO
 
-# Binary timing test: ~34 min/epoch for 4373 images at imgsz=512. Multiclass
-# has fewer images (2649 train) but a harder 32-way task and larger imgsz, so
-# epoch budget is kept modest to fit a CPU-only training run in a practical
-# amount of wall-clock time; raise --epochs if run on a GPU.
 PROJECT_DIR = str((Path(__file__).resolve().parents[2] / "outputs" / "runs"))
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", default="outputs/data/multiclass/data.yaml")
+    # CPU-only training; raise if run on a GPU.
     ap.add_argument("--epochs", type=int, default=25)
     ap.add_argument("--imgsz", type=int, default=640)
     ap.add_argument("--batch", type=int, default=6)
