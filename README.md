@@ -1,16 +1,15 @@
 # Tooth Segmentation — Panoramic Radiographs
 
-Master's thesis project (European University Cyprus, Dept. of Computer Science
-and Engineering): binary and multi-class tooth segmentation, applied to
-panoramic dental radiographs.
+Binary and multi-class tooth segmentation, applied to panoramic dental
+radiographs.
 
 Given a panoramic X-ray, the system:
 
 1. **Binary segmentation** — identifies which pixels belong to a tooth vs.
-   background (objective 2).
+   background.
 2. **Multi-class segmentation** — segments and numbers each individual tooth
    using FDI (ISO-3950) notation, and derives its tooth-group
-   (incisor / canine / premolar / molar) from the FDI code (objective 3).
+   (incisor / canine / premolar / molar) from the FDI code.
 
 ## Project layout
 
@@ -23,7 +22,7 @@ src/tooth_seg/
 scripts/
   data/
     prepare_all.py           run every converter: Datasets/ -> outputs/unified/*.json
-    analyze_datasets.py      objective 1: dataset analysis + plots
+    analyze_datasets.py      dataset analysis + plots
     dedupe_and_split.py      cross-dataset duplicate detection + train/val/test split
     materialize_yolo.py      build final YOLOv8-seg dataset folders
   model/
@@ -31,7 +30,7 @@ scripts/
     train_multiclass.py      train the multi-class (32-FDI) segmentation model
     evaluate.py               evaluate a trained model on its test split
     predict_samples.py        run both models on sample images, save visualizations
-app/app.py                    Gradio dev tool: upload a radiograph, see results (objective 4)
+app/app.py                    Gradio dev tool: upload a radiograph, see results
 web/
   backend/main.py             FastAPI wrapper around the same inference pipeline
   frontend/                   React UI for clinical use (odontogram, reports, etc.)
@@ -116,7 +115,7 @@ substantially for better accuracy.
 # 1. Convert all raw datasets to the unified schema
 .venv\Scripts\python.exe scripts/data/prepare_all.py
 
-# 2. Dataset analysis (objective 1)
+# 2. Dataset analysis
 .venv\Scripts\python.exe scripts/data/analyze_datasets.py
 
 # 3. Cross-dataset dedup + split assignment
@@ -125,7 +124,7 @@ substantially for better accuracy.
 # 4. Build YOLOv8-seg-ready directories (binary + multiclass)
 .venv\Scripts\python.exe scripts/data/materialize_yolo.py
 
-# 5. Train (objective 2 then objective 3) - each takes a while on CPU
+# 5. Train (binary then multiclass) - each takes a while on CPU
 .venv\Scripts\python.exe scripts/model/train_binary.py
 .venv\Scripts\python.exe scripts/model/train_multiclass.py
 
@@ -136,7 +135,7 @@ substantially for better accuracy.
 # 7. Sample prediction visualizations
 .venv\Scripts\python.exe scripts/model/predict_samples.py
 
-# 8. Launch the demo app (objective 4)
+# 8. Launch the demo app
 .venv\Scripts\python.exe app/app.py
 ```
 
