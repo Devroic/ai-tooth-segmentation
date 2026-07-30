@@ -3,7 +3,7 @@ import './Odontogram.css'
 
 // Groups duplicate FDI predictions (see README) so the chart flags the
 // ambiguity; each group sorted by confidence descending.
-function groupByFdi(detections) {
+export function groupByFdi(detections) {
   const byFdi = {}
   for (const d of detections) {
     if (!byFdi[d.FDI]) byFdi[d.FDI] = []

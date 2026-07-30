@@ -18,6 +18,8 @@ _GROUP_COLORS = {
 }
 _DEFAULT_COLOR = (200, 200, 200)
 
+_MIRROR_QUADRANT = {"1": "2", "2": "1", "3": "4", "4": "3"}
+
 
 @dataclass
 class ToothDetection:
@@ -26,6 +28,64 @@ class ToothDetection:
     confidence: float
     bbox: tuple[float, float, float, float]  # x1,y1,x2,y2
     mask: np.ndarray  # HxW bool, full image size
+
+
+def mirror_fdi(fdi: str) -> str:
+    """'11' -> '21' (same tooth position, opposite quadrant/side)."""
+    return _MIRROR_QUADRANT[fdi[0]] + fdi[1]
+
+
+def _mask_iou(a: np.ndarray, b: np.ndarray) -> float:
+    union = np.logical_or(a, b).sum()
+    return float(np.logical_and(a, b).sum()) / float(union) if union else 0.0
+
+
+def resolve_duplicate_fdi(detections: list[ToothDetection], image_width: int) -> list[ToothDetection]:
+    """Each FDI code should appear once per radiograph. When the model
+    predicts it twice, the pair is either the same tooth flagged twice
+    (overlapping masks - keep the higher-confidence one) or the model's known
+    left-right mirror mixup (e.g. actual tooth 21 predicted as "11"): relabel
+    whichever detection sits in the anatomically wrong half of the image to
+    its mirror FDI, per the "patient's right shown on the left" convention.
+    """
+    by_fdi: dict[str, list[ToothDetection]] = {}
+    for d in detections:
+        by_fdi.setdefault(d.fdi, []).append(d)
+
+    resolved = [group[0] for group in by_fdi.values() if len(group) == 1]
+    used_fdi = {d.fdi for d in resolved}
+
+    for fdi, group in by_fdi.items():
+        if len(group) == 1:
+            continue
+
+        group.sort(key=lambda d: d.confidence, reverse=True)
+        kept: list[ToothDetection] = []
+        for d in group:
+            if any(_mask_iou(d.mask, k.mask) > 0.3 for k in kept):
+                continue  # duplicate detection of an already-kept tooth
+            kept.append(d)
+
+        expects_left_half = fdi[0] in ("1", "4")
+
+        def on_expected_side(d: ToothDetection) -> bool:
+            cx = (d.bbox[0] + d.bbox[2]) / 2
+            return (cx < image_width / 2) == expects_left_half
+
+        kept.sort(key=on_expected_side, reverse=True)
+        resolved.append(kept[0])
+        used_fdi.add(fdi)
+
+        for d in kept[1:]:
+            mirrored = mirror_fdi(fdi)
+            if mirrored in used_fdi:
+                continue  # would create a new collision - drop rather than guess
+            resolved.append(ToothDetection(fdi=mirrored, group=fdi_to_group(mirrored),
+                                            confidence=d.confidence, bbox=d.bbox, mask=d.mask))
+            used_fdi.add(mirrored)
+
+    resolved.sort(key=lambda d: d.fdi)
+    return resolved
 
 
 @dataclass
@@ -89,7 +149,7 @@ class ToothSegPipeline:
             detections.append(ToothDetection(fdi=fdi, group=group, confidence=confv,
                                               bbox=(x1, y1, x2, y2), mask=mask_resized))
 
-        detections.sort(key=lambda d: d.fdi)
+        detections = resolve_duplicate_fdi(detections, w)
 
         for det in detections:
             color = _GROUP_COLORS.get(det.group, _DEFAULT_COLOR)

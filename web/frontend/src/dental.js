@@ -7,7 +7,8 @@ export const GROUP_COLORS = {
   molar: '#0F9D58',
 }
 
-// Below this, flag for review instead of filtering out.
+// Below this, flag for review instead of filtering out. The precision/recall
+// break-even on the held-out test set is ~0.43; 0.5 adds a small safety margin.
 export const LOW_CONFIDENCE_THRESHOLD = 0.5
 
 const ORDINAL_NAME = {

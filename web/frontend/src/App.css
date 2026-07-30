@@ -65,7 +65,14 @@
 
 .panel h2 {
   font-size: 16px;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
+}
+
+.panel-subtitle {
+  color: #64748b;
+  font-size: 13px;
+  margin-bottom: 14px;
+  max-width: 60ch;
 }
 
 .empty-main {
@@ -85,5 +92,59 @@
   }
   .app-sidebar {
     position: static;
+  }
+}
+
+.print-header {
+  display: none;
+}
+
+.report-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.report-button {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+}
+
+.report-button:hover {
+  background: #f8fafc;
+}
+
+@media print {
+  .app-header,
+  .app-sidebar,
+  .banner,
+  .report-actions,
+  .image-viewer-tabs {
+    display: none;
+  }
+
+  .print-header {
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  .print-header p {
+    color: #64748b;
+    font-size: 13px;
+  }
+
+  .app-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .panel,
+  .image-viewer {
+    break-inside: avoid;
+    border: none;
   }
 }

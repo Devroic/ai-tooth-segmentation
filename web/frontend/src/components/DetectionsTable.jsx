@@ -1,7 +1,7 @@
 import { GROUP_COLORS, LOW_CONFIDENCE_THRESHOLD } from '../dental'
 import './DetectionsTable.css'
 
-function confidenceTier(confidence) {
+export function confidenceTier(confidence) {
   if (confidence < LOW_CONFIDENCE_THRESHOLD) return 'low'
   if (confidence < 0.7) return 'medium'
   return 'high'
