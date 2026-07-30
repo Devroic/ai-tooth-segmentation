@@ -14,8 +14,10 @@ Given a panoramic X-ray, the system:
 ## Project layout
 
 ```
+Dockerfile, .dockerignore     container image for the web app (no Python install needed)
+run.bat                       one-command launcher (sets up .venv, runs either app)
 Datasets/                    11 raw source datasets (not modified, gitignored)
-docs/                         thesis contract PDF and other reference material
+docs/                         project reference material
 models/                        shipped inference weights (tracked in git, see below)
   binary_seg/best.pt
   multiclass_seg/best.pt
@@ -47,22 +49,44 @@ outputs/                      generated data/reports/retraining runs (gitignored
 The two trained checkpoints (`models/binary_seg/best.pt`,
 `models/multiclass_seg/best.pt`, ~6.5MB each) and the prebuilt frontend
 (`web/frontend/dist/`) are committed to the repo, so both apps work
-immediately after cloning - no dataset, no training run, no `npm install`:
+immediately after cloning - no dataset, no training run, no `npm install`.
+
+`run.bat` sets up the venv on first run (if missing) and launches either app:
+
+```
+run.bat            # prompts: web app or Gradio
+run.bat web         # clinical web app -> http://127.0.0.1:8000
+run.bat gradio      # Gradio dev tool
+```
+
+Or do it by hand:
 
 ```
 py -3.12 -m venv .venv
 .venv\Scripts\python.exe -m pip install -r requirements.txt
 .venv\Scripts\python.exe -m pip install -e .
 
-# Gradio dev tool
-.venv\Scripts\python.exe app/app.py
-
-# or the clinical web app
-.venv\Scripts\python.exe -m uvicorn web.backend.main:app --port 8000
+.venv\Scripts\python.exe app/app.py                                        # Gradio
+.venv\Scripts\python.exe -m uvicorn web.backend.main:app --port 8000       # web app
 ```
 
 `Datasets/` and `outputs/` remain gitignored - they're only needed if you
 want to retrain from scratch (see "Reproducing the pipeline" below).
+
+## Docker (no Python required)
+
+The web app also runs in a container - nothing to install beyond Docker
+itself:
+
+```
+docker build -t tooth-seg .
+docker run -p 8000:8000 tooth-seg
+```
+
+Open `http://127.0.0.1:8000`. The image bundles the shipped weights and
+prebuilt frontend, so this works right after cloning, no other setup.
+(Gradio isn't included in the image - it's a local dev tool, see `run.bat`
+above.)
 
 ## Data
 

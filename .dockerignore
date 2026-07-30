@@ -1,0 +1,12 @@
+Datasets/
+outputs/
+.venv/
+.git/
+docs/
+app/
+scripts/
+web/frontend/node_modules/
+web/frontend/src/
+web/frontend/public/
+**/__pycache__/
+*.pyc
