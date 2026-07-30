@@ -6,8 +6,8 @@ import Odontogram from './components/Odontogram'
 import DetectionsTable from './components/DetectionsTable'
 import './App.css'
 
-// Recall-first: 94% recall on the held-out test set at 0.15 vs 83% at the
-// F1-optimal 0.43 (see scripts/model/calibrate_confidence.py) - the lost
+// Recall-first: 94% recall on the held-out test set at 0.15 vs 80% at the
+// F1-optimal 0.41 (see scripts/model/calibrate_confidence.py) - the lost
 // precision is acceptable since low-confidence hits are flagged for review
 // rather than hidden (see dental.js). Not user-configurable.
 const ANALYZE_CONF = 0.15

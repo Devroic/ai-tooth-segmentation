@@ -1,9 +1,13 @@
 """Dataset 30: Roboflow YOLO export (yolo_train_dataset + yolo_test_dataset),
-bounding boxes only (no polygon masks). data.yaml class order is exactly
-FDI codes "11".."48" in the same order as UNIVERSAL_TO_FDI, so class_id ->
-FDI is a direct list lookup. Boxes are converted to degenerate 4-corner
-polygons and flagged box_only=True so training/eval code can treat them as
-weak (coarse) mask supervision rather than precise contours.
+bounding boxes only (no polygon masks). The dataset's own data.yaml orders
+classes by ascending FDI string ("11".."18", "21".."28", "31".."38",
+"41".."48") - NOT the Universal-numbering order of tooth_seg.taxonomy.FDI_CODES
+(which runs "18".."11", "38".."31", ...). Those two orders happen to coincide
+for quadrants 2 and 4 but are exactly reversed for quadrants 1 and 3, so
+class_id must be mapped via this dataset's own class list, not FDI_CODES.
+Boxes are converted to degenerate 4-corner polygons and flagged box_only=True
+so training/eval code can treat them as weak (coarse) mask supervision rather
+than precise contours.
 """
 from __future__ import annotations
 
@@ -12,9 +16,18 @@ from pathlib import Path
 from PIL import Image
 
 from tooth_seg.data.converters.common import UnifiedWriter, box_to_polygon
-from tooth_seg.taxonomy import FDI_CODES, fdi_to_group
+from tooth_seg.taxonomy import fdi_to_group
 
 DATASET_ID = "30"
+
+# This dataset's data.yaml `names` order (ascending FDI string), confirmed
+# against Datasets/30/yolo_train_dataset/data.yaml and yolo_test_dataset/data.yaml.
+_CLASS_ID_TO_FDI = [
+    "11", "12", "13", "14", "15", "16", "17", "18",
+    "21", "22", "23", "24", "25", "26", "27", "28",
+    "31", "32", "33", "34", "35", "36", "37", "38",
+    "41", "42", "43", "44", "45", "46", "47", "48",
+]
 
 
 def _convert_split(writer: UnifiedWriter, images_dir: Path, labels_dir: Path, skipped: list[int]) -> None:
@@ -31,10 +44,10 @@ def _convert_split(writer: UnifiedWriter, images_dir: Path, labels_dir: Path, sk
             if len(parts) < 5:
                 continue
             cls_id = int(parts[0])
-            if not (0 <= cls_id < len(FDI_CODES)):
+            if not (0 <= cls_id < len(_CLASS_ID_TO_FDI)):
                 skipped[0] += 1
                 continue
-            fdi = FDI_CODES[cls_id]
+            fdi = _CLASS_ID_TO_FDI[cls_id]
             xc, yc, bw, bh = (float(v) for v in parts[1:5])
             x = (xc - bw / 2) * w
             y = (yc - bh / 2) * h
