@@ -39,7 +39,7 @@ itself.
 
 ```
 run.bat            # prompts: web app or Gradio
-run.bat web         # clinical web app -> http://127.0.0.1:8000
+run.bat web         # clinical web app -> http://localhost:8000
 run.bat gradio      # Gradio dev tool
 ```
 
@@ -56,7 +56,7 @@ py -3.12 -m venv .venv
 
 ## Using the app
 
-1. Open the app (`http://127.0.0.1:8000` for the web app) and upload a
+1. Open the app (`http://localhost:8000` for the web app) and upload a
    panoramic dental X-ray (JPG or PNG).
 2. Click "Analyze X-ray." You'll get back the annotated radiograph, an
    **odontogram** (a dental-chart view of every detected tooth, colored by
@@ -74,10 +74,10 @@ itself:
 
 ```
 docker build -t tooth-seg .
-docker run -p 8000:8000 tooth-seg
+docker run --name tooth-seg -p 8000:8000 tooth-seg
 ```
 
-Open `http://127.0.0.1:8000`. The image bundles the shipped weights and
+Open `http://localhost:8000`. The image bundles the shipped weights and
 prebuilt frontend, so this works right after cloning, no other setup.
 (Gradio isn't included in the image - it's a separate local tool, see below.)
 
