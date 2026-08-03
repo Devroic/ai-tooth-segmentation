@@ -1,38 +1,31 @@
-# Raw source datasets (11GB, provided locally - not project source)
-Datasets/
-
-# Generated data/models/reports - all reproducible via scripts/ (see README)
-outputs/
-
-# Python virtual environment
-.venv/
-venv/
-
-# Python build/cache artifacts
+# Python virtual environment & build/cache artifacts
 __pycache__/
 *.pyc
 *.egg-info/
 /build/
 /dist/
+.venv/
+venv/
 
-# Pretrained weights auto-downloaded by ultralytics (re-fetched on demand),
-# and any stray checkpoints elsewhere - but the shipped inference weights in
-# models/ are tracked so the apps work right after a git pull, no training
-# required.
-*.pt
-*.onnx
-!models/**/*.pt
+# Dev-only content - not needed to run the app, just to develop/retrain it.
+Datasets/
+training/
+tests/
+requirements-dev.txt
+web/frontend/.oxlintrc.json
+web/frontend/src/**/*.test.js
+docs
 
-# Stray Ultralytics run dir created if project/name resolution misbehaves
-/runs/
+# Generated data
+outputs/
 
-# Frontend (web/frontend) - dist/ is tracked (see below) so the FastAPI
-# backend can serve the app right after a git pull, no npm/node needed
+# Pretrained weight
+yolov8n-seg.pt
+
+# Frontend 
 node_modules/
 *.local
 
 # OS cruft
 .DS_Store
 Thumbs.db
-
-docs
